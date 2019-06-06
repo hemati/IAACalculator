@@ -2,6 +2,8 @@ package iaaFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Display.Show;
 import iaaGenerator.IAACalculator;
 import iaaGenerator.IAAExtractor;
 
@@ -66,7 +68,8 @@ public class IAACalculatorFactory {
 		System.out.println("calculating overall iaa for every row for pairs");
 		//calculates the overall iaa for every row for every pair
 		_overallPair = this.pairASF2(iaaMethod,  iaaCalc, extractor._parsedTsvNHSplit, false);
-
+		
+		//Show.showNestedList(extractor._finalVerbLists);
 		System.out.println("calculating the iaa for every verb for every annotator");
 		//calculates the iaa for every verb for every annotator(iaa per pair)
 		_verbsPair = this.pairASF(iaaMethod, iaaCalc, extractor._finalVerbLists, false);
@@ -183,8 +186,5 @@ public class IAACalculatorFactory {
 		//Show.showNestedList(resultSet);
 		return resultSet;
 	}
-	
-	
-	
 	
 }

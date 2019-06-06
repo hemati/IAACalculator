@@ -268,11 +268,6 @@ public class IAACalculator {
 		//[verb, Annotator 1, Annotator 2, result]
 		List<String[]> resultSet = new ArrayList<String[]>();
 
-		//initialize a study with 2 annotator's(a pair)
-		CodingAnnotationStudy study = 
-				new CodingAnnotationStudy(2);
-	
-		study = addCategoriesToStudy(study);
 		
 		//get the parsed tsv without head(satzID,verb,satz)
 		List<String[]> listNoHead = parsedNoHead;		
@@ -289,7 +284,16 @@ public class IAACalculator {
 		
 		for(int i = 1; i < annotatorsArray.length; i++) {
 			//annotator 
+			//String[] result = new String[4];
 			for(int j = 1; j < annotatorsArray.length; j++) {
+				
+				//initialize a study with 2 annotator's(a pair)
+				CodingAnnotationStudy study = 
+						new CodingAnnotationStudy(2);
+			
+				study = addCategoriesToStudy(study);
+				
+				
 				String[] result = new String[4];
 				result[1] = annotatorsArray[i];//add first annotator
 				result[2] = annotatorsArray[j];//add (first) following annotators
@@ -299,17 +303,13 @@ public class IAACalculator {
 				for(int k = 1; k < listNoHead.size(); k++) {
 					//we are looking for the information inside the column of
 					//the annotator.
-					//System.out.println(annotatorsArray[1] + " " + annotatorsArray[j]);
-					//System.out.println(listNoHead.get(k)[i+1] + " " + listNoHead.get(k)[j] + " ");
-		
+					
 					if(isSenses) {
 						result[0] = listNoHead.get(0)[0];//add verb 
 					}else {
 						result[0] = listNoHead.get(k)[verbPos];//add verb 
 					}
-					
-					//result[0] = listNoHead.get(k)[verbPos];//add verb 
-					Object obj1 = listNoHead.get(k)[verbPos+1]; 
+					Object obj1 = listNoHead.get(k)[i]; 
 					Object obj2 = listNoHead.get(k)[j];
 					Object[] objArray = {obj1, obj2};
 					//System.out.println( listNoHead.get(k)[0] + " " +  listNoHead.get(k)[1]);
@@ -340,28 +340,28 @@ public class IAACalculator {
 		//save all IAA results inside a string array with form:
 		//[verb, Annotator 1, Annotator 2, result]
 		List<String[]> resultSet = new ArrayList<String[]>();
-
-		//initialize a study with 2 annotator's(a pair)
-		CodingAnnotationStudy study = 
-				new CodingAnnotationStudy(2);
-	
-		study = addCategoriesToStudy(study);
 		
+
 		//get the parsed tsv without head(satzID,verb,satz)
 		List<String[]> listNoHead = parsedNoHead;		
 		
-		//Show.showList(listNoHead);
-		
-		/*for all permuations of annotators
-		 * we calculate a study.
-		 */
 		int verbPos = 0;
 		
-		
-		for(int i = 0; i <annotatorsArray.length; i++) {
+		for(int i = 1; i < annotatorsArray.length; i++) {
 
+			//initialize a study with 2 annotator's(a pair)
+
+		
+			//study = addCategoriesToStudy(study);
+			
 			//for every annotator j that will be compare to annotator i
 			for(int j = 1; j < annotatorsArray.length; j++) {
+				
+				CodingAnnotationStudy study = 
+						new CodingAnnotationStudy(2);
+				
+				study = addCategoriesToStudy(study);
+				
 				String[] result = new String[4];
 				result[1] = annotatorsArray[i];//add first annotator
 				result[2] = annotatorsArray[j];//add (first) following annotators
@@ -381,7 +381,7 @@ public class IAACalculator {
 					}
 					
 					//result[0] = listNoHead.get(k)[verbPos];//add verb 
-					Object obj1 = listNoHead.get(k)[verbPos+1]; 
+					Object obj1 = listNoHead.get(k)[i]; 
 					Object obj2 = listNoHead.get(k)[j];
 					Object[] objArray = {obj1, obj2};
 					//System.out.println( listNoHead.get(k)[0] + " " +  listNoHead.get(k)[1]);
@@ -400,6 +400,7 @@ public class IAACalculator {
 	
 		//Show.showList(resultSet);
 		return resultSet;
-		
 	}
+	
+	
 }
