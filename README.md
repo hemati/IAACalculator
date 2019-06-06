@@ -1,11 +1,12 @@
 IAACalculator V0.0.6
-
+-------------------
 
 The IAACalculator calculates the iaa score for two or more annotator's
 using the Percentage-, RandolphKappa- or Bennett's agreement.
 
 
 Infos:
+----
 The basic tsv file that contains the data must have the following 
 structure or it won't work:
 
@@ -34,11 +35,12 @@ It should be mentioned that the Bennett's agreement is only for
 agreement calculations for the first description row due to a sloppy coding, sorry for that!:)<<<
 -------------------------------------------------------------------------------------------------
 
--------Starting------------------
+Starting
+--------
+
 (tested on windows, with JavaSE-1.8)
 Input path should contain the name of the tsv file with .tsv at the end
 in: ...\path\iaaFile.tsv
 out: ...\path\folder
 
 for the method just write the mentioned method name.
-------------------------------------------------------
