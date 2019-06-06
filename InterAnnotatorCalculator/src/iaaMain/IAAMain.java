@@ -77,22 +77,22 @@ public class IAAMain {
 		System.out.println("");
 		System.out.println("export overall result");
 		
-		IAAExporter.exportDouble("overall iaa", iaaCalcFactory._overallMult , out,"OverallResult.txt");
+		IAAExporter.exportDouble("overall iaa", iaaCalcFactory._overallMult , out,"Multiple_IAA_OverAll_Rows.txt");
 		
 		System.out.println("export #sentence / #verb correlation");
 		
 		IAAExporter.exportDouble("Correlation between #Sentence and #Verbs", 
-				iaaCalcFactory._sentenceSenseCorr , out,"NumSentNumVerbCORR.txt");
+				iaaCalcFactory._sentenceSenseCorr , out,"NumberSentences_And_#Verbs_CORR.txt");
 		
 		System.out.println("export iaa per verb / senses per verb correlation");
 		
 		IAAExporter.exportDouble("Correlation between iaaPV and SensesPV", 
-				iaaCalcFactory._iaaVerbSenseCorr , out,"IAAVerbNumSensesCORR.txt");
+				iaaCalcFactory._iaaVerbSenseCorr , out,"IAAPerVerb_And_SensesPerVerb_CORR.txt");
 		
 		System.out.println("");
 		System.out.println("export overall pairs result set");
 		
-		IAAExporter.exportNestedList( iaaCalcFactory._overallPair, out, "OverallSentencesPairwise.txt");
+		IAAExporter.exportNestedList( iaaCalcFactory._overallPair, out, "Multiple_Overall_Sentences_Pairwise.txt");
 		
 		//Show.showList(iaaCalcFactory._overall);
 		
@@ -104,12 +104,12 @@ public class IAAMain {
 		System.out.println("");
 		System.out.println("export overall result multiple verbs");
 		
-		IAAExporter.exportList(verbsMul ,out, "VerbsMultiple.txt");
+		IAAExporter.exportList(verbsMul ,out, "Multiple_Per_Verb.txt");
 		
 		System.out.println("");
 		System.out.println("export result for every verb");
 		
-		IAAExporter.exportNestedList(verbsPair ,out, "VerbsPair.txt");
+		IAAExporter.exportNestedList(verbsPair ,out, "Pairwise_For_Verbs.txt");
 		
 		System.out.println("");
 		System.out.println("");
@@ -122,12 +122,12 @@ public class IAAMain {
 		System.out.println("");
 		System.out.println("export verbs per sentence count");
 		
-		IAAExporter.exportList(sentencePV ,out, "SentencesPerVerbCount.txt");
+		IAAExporter.exportList(sentencePV ,out, "SentencesPerVerb_Count.txt");
 		
 		System.out.println("");
 		System.out.println("export senses per verb count");
 		
-		IAAExporter.exportList(sensesPV ,out, "SensesPerVerbCount.txt");
+		IAAExporter.exportList(sensesPV ,out, "SensesPerVerb_Count.txt");
 		
 		System.out.println("");
 		
@@ -135,7 +135,7 @@ public class IAAMain {
 		System.out.println("");
 		System.out.println("export senses per verb list");
 		
-		IAAExporter.exportStringNestedList(iaaEx._allSensesList ,out, "SensesPerVerbList.txt");
+		IAAExporter.exportStringNestedList(iaaEx._allSensesList ,out, "SenseNumbers_PerVerbList.txt");
 		
 		System.out.println("finished");
 	}
