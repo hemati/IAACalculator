@@ -39,7 +39,7 @@ Starting
 --------
 
 (tested on windows, with JavaSE-1.8)
-Input path should contain the name of the tsv file with .tsv at the end
+Input path should contain the name of the tsv file with .tsv at the end.
 in: ...\path\iaaFile.tsv
 out: ...\path\folder
 
