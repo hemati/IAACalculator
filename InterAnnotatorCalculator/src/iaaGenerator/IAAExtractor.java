@@ -161,7 +161,7 @@ public class IAAExtractor {
 		
 		//remove the "*" and replace it with null
 		//we start at row 0 until the end
-		for(int i = 1; i < allRows.size(); i++) {
+		for(int i = 0; i < allRows.size(); i++) {
 			
 			String[] temp = new String[allRows.get(i).length-1];
 			//fill the temporary array
