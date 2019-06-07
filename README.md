@@ -29,7 +29,7 @@ inside the CodingAnnotationStudy class.
 [id-s10-0	sagen	Gesagt, alle Mann und Frau getan.	12345	null	null	null	null	null	null	54321	null	]
 
 
-It should be mentioned that the Bennett's agreement is only for
+It should be mentioned that the Bennett's agreement works for only
 2 Annotators.
 
 -------------------------------------------------------------------------------------------------
