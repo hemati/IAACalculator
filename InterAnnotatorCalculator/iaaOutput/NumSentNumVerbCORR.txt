@@ -1,4 +1,0 @@
-Correlation between #Sentence and #Verbs
-0.8249908380307521
-Correlation between #Sentence and #Verbs
-0.8249908380307521
