@@ -17,7 +17,9 @@ Furthermore it takes into account, that annotator's didn't
 annotate all sentences equally, which results in a "*" at the specific cell
 that should contain a sense number like "784421"(see below).
 
+
 [id-s10-0	sagen	Gesagt, alle Mann und Frau getan.	12345	*	*	*	*	*	*	54321	*	]
+
 
 
 The DKPro package is used to calculate the iaa scores,
