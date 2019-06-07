@@ -17,17 +17,19 @@ Furthermore it takes into account, that annotator's didn't
 annotate all sentences equally, which results in a "*" at the specific cell
 that should contain a sense number like "784421"(see below).
 
+
 [id-s10-0	sagen	Gesagt, alle Mann und Frau getan.	12345	*	*	*	*	*	*	54321	*	]
+
 
 
 The DKPro package is used to calculate the iaa scores,
 the "*" changes to null values, via parsing, to match the needs addItem function
 inside the CodingAnnotationStudy class.
-E.g
+
 [id-s10-0	sagen	Gesagt, alle Mann und Frau getan.	12345	null	null	null	null	null	null	54321	null	]
 
 
-It should be mentioned that the Bennett's agreement is only for
+It should be mentioned that the Bennett's agreement works for only
 2 Annotators.
 
 -------------------------------------------------------------------------------------------------
