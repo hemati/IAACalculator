@@ -25,7 +25,7 @@ that should contain a sense number like "784421"(see below).
 The DKPro package is used to calculate the iaa scores,
 the "*" changes to null values, via parsing, to match the needs addItem function
 inside the CodingAnnotationStudy class.
-E.g
+
 [id-s10-0	sagen	Gesagt, alle Mann und Frau getan.	12345	null	null	null	null	null	null	54321	null	]
 
 
