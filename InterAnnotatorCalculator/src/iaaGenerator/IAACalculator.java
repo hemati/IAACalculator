@@ -22,7 +22,8 @@ public class IAACalculator {
 	public static enum IAAMethods{
 							 Percentage,
 							 Bennetts,
-							 RandolphKappa};
+							 RandolphKappa,
+							 FleissKappa};
 	IAAExtractor _extractor;
 
 
