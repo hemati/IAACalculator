@@ -1,6 +1,7 @@
 package iaaGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -84,7 +85,7 @@ public class IAACalculator {
 				
 				temp[j-1] = listNoHead.get(i)[j]; //e.g temp[0] now contains annotato's A value
 			}
-
+			System.out.println(Arrays.toString(temp));
 			//convert temp string[] to obj for DRPro addItem function
 			Object[] obj =  temp;
 			//System.out.println(" ");

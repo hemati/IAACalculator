@@ -16,7 +16,7 @@ import iaaFactory.IAACalculatorFactory;
 import iaaGenerator.IAACalculator;
 import iaaGenerator.IAAExtractor;
 
-public class IAAMain {
+public class IAACLI {
 
 	public static void main(String[] args) throws IOException {
 
