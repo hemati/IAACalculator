@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.geometry.Vector;
 import org.dkpro.statistics.agreement.InsufficientDataException;
 import org.dkpro.statistics.agreement.coding.CodingAnnotationStudy;
 import org.dkpro.statistics.agreement.coding.RandolphKappaAgreement;
@@ -74,8 +76,9 @@ public class IAAMain {
 			annotator_array[i] = annotators.get(i);
 		}
 		
-		double[][] confusion_matrix = iaamatrix(allRows, annotators);
-		double overall_score = iaascore(allRows, annotator_array);
+		Map<String, List<String>> verbLemmaIds = loadVerbLemmas();
+		double[][] confusion_matrix = iaamatrix(allRows, annotators, verbLemmaIds);
+		double overall_score = iaascore(allRows, annotator_array, verbLemmaIds);
 		
 		List<String> scores_out = new ArrayList<String>();
 		List<String> matrix_out = new ArrayList<String>();
@@ -83,53 +86,74 @@ public class IAAMain {
 		matrix_out.add("Overall Score:\t" + overall_score);
 		String pretty_matrix = pretty_print_cm(confusion_matrix, annotator_names);
 		matrix_out.add(pretty_matrix + System.lineSeparator());
-		System.out.println("Overall score: " + overall_score);
-		System.out.println(pretty_matrix);	
+		//System.out.println("Overall score: " + overall_score);
+		//System.out.println(pretty_matrix);	
 		
 		
 		ArrayList<String> low_n_verbs = new ArrayList<String>();
 		Map<String, Double> verbscores = new HashMap<String, Double>();
+		Map<String, Map<String, Integer>> category_counts = new HashMap<String, Map<String, Integer>>();
+		
 		for (String verb : verbrows.keySet()) {
-			System.out.println("\n" + verb + ":");
+			
+			if (!category_counts.containsKey(verb)) category_counts.put(verb, new HashMap<String, Integer>());
+			Map<String, Integer> category_map = category_counts.get(verb);
+			for (String category : verbLemmaIds.get(verb)) {
+				category_map.put(category, 0);
+			}
+			category_map.put("1", 0);
+			
+			//System.out.println("\n" + verb + ":");
 			if (verbrows.get(verb).size() < 1) {
 				low_n_verbs.add(verb);
 				continue;
 			}
 			
+			// Count how many sentences each annotator annotated and how often each annotation appears
 			int n_annotators = annotator_names.size();
 			int[] annot_counts = new int[n_annotators];
 			for (String[] strings : verbrows.get(verb)) {
 				for (int i = 3; i < strings.length; i++) {
 					if (!strings[i].equals("*")) {
 						annot_counts[i-3] += 1;
+						//if (!category_map.containsKey(strings[i])) //throw some kind of error;
+						// übrig#haben has inconsistent categories between database and germanet
+						if (!category_map.containsKey(strings[i])) {
+							System.out.println(verb);
+							System.out.println(strings[i]);
+							System.out.println(category_map.keySet());
+							continue;
+						}
+						int count = category_map.get(strings[i]);
+						count += 1;
+						category_map.put(strings[i], count);
 					}
 				}
 			}
 			
+			// Filter out annotators without annotations
 			List<Integer> filtered_annotators = new ArrayList<Integer>();
 			for (int i = 0; i < n_annotators; i++) {
 				if (!(annot_counts[i] < 1)) {
 					filtered_annotators.add(i);
 				}
 			}
-			
 			n_annotators = filtered_annotators.size();
 			int[] filtered_array = new int[n_annotators];
 			for (int i = 0; i < n_annotators; i++) {
 				filtered_array[i] = filtered_annotators.get(i);
 			}
 			
-			overall_score = iaascore(verbrows.get(verb), filtered_array);
+			
+			overall_score = iaascore(verbrows.get(verb), filtered_array, verbLemmaIds);
 			verbscores.put(verb, overall_score);
-			confusion_matrix = iaamatrix(verbrows.get(verb), filtered_annotators);
+			confusion_matrix = iaamatrix(verbrows.get(verb), filtered_annotators, verbLemmaIds);
 			
 			matrix_out.add(verb + ":\t" + overall_score);
 			pretty_matrix = pretty_print_cm(confusion_matrix, filtered_annotators.stream().map(x -> annotator_names.get(x)).collect(Collectors.toList()));
 			matrix_out.add(pretty_matrix + System.lineSeparator());
-			System.out.println("Overall score: " + overall_score);
-			System.out.println(pretty_matrix);	
-			
-			
+			//System.out.println("Overall score: " + overall_score);
+			//System.out.println(pretty_matrix);
 		}
 		
 		System.out.println(low_n_verbs);
@@ -141,16 +165,25 @@ public class IAAMain {
 
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 		
-		for (String verb: sortedByValue.keySet()) scores_out.add(verb + ":\t" + sortedByValue.get(verb));
+		for (String verb: sortedByValue.keySet()) {
+			List<Integer> counts = new ArrayList<Integer>(category_counts.get(verb).values());
+			int sum = 0;
+			for (int i: counts) sum += i;
+			double L2normed = 0;
+			for (int val : counts) {
+				L2normed += Math.pow(((double)val)/sum, 2);
+			}
+			L2normed = Math.sqrt(L2normed);
+			L2normed = (L2normed*counts.size() - 1)/(counts.size() - 1);
+			scores_out.add(verb + ":\t" + sortedByValue.get(verb) + "\t" + verbrows.get(verb).size() + "\t" + L2normed);
+		}
 		
 		FileUtils.writeLines(new File("scores"), scores_out);
 		FileUtils.writeLines(new File("matrices"), matrix_out);
 	}
 	
-	public static double[][] iaamatrix(List<String[]> input, List<Integer> annotators) throws IOException {
+	public static double[][] iaamatrix(List<String[]> input, List<Integer> annotators, Map<String, List<String>> verbLemmaIds) throws IOException {
 		int n_annotators = annotators.size();
-		
-		//TODO: Fix alignment
 		double[][] confusion_matrix = new double[n_annotators][n_annotators];
 		for (int i = 0; i < n_annotators; i++) {
 			for (int j = 0; j < n_annotators; j++) {
@@ -160,7 +193,7 @@ public class IAAMain {
 				}
 				int[] selectedAnnotators = new int[]{annotators.get(i),annotators.get(j)};
 				
-				double score = iaascore(input, selectedAnnotators);
+				double score = iaascore(input, selectedAnnotators, verbLemmaIds);
 				confusion_matrix[i][j] = score;
 			}
 		}
@@ -190,12 +223,7 @@ public class IAAMain {
 		return sb.toString();
 	}
 	
-	public static double iaascore(List<String[]> input, int[] annotators) throws IOException {
-		CodingAnnotationStudy study = new CodingAnnotationStudy(annotators.length);
-
-		//TODO: Add categories
-
-		//TODO: Load verbLemmaIds
+	public static Map<String, List<String>> loadVerbLemmas() throws IOException {
 		HashMap<String, List<String>> verbLemmaIds = new HashMap<String, List<String>>();
 		List<String>lines = FileUtils.readLines(new File("/home/s3035016/eclipse-workspace/VerbsAnnotator/verbLemmaIds"), "UTF-8");
 		for (String line: lines) {
@@ -207,6 +235,12 @@ public class IAAMain {
 			}
 			verbLemmaIds.put(verb, categories);
 		}
+		return verbLemmaIds;
+	}
+	
+	public static double iaascore(List<String[]> input, int[] annotators, Map<String, List<String>> verbLemmaIds) throws IOException {
+		CodingAnnotationStudy study = new CodingAnnotationStudy(annotators.length);
+		
 		// Get all verbs in input
 		HashSet<String> verblist = new HashSet<String>();
 		for (String[] string : input) {
